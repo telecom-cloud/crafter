@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+package crafter.other;
+
+import "other/other_base.proto";
+
+option go_package = "other";
+
+message OtherType {
+  optional string IsBaseString = 1;
+  optional OtherBaseType IsOtherBaseType = 2;
+}

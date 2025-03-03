@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package base;
+
+option go_package = "psm";
+
+message Base {
+  optional string IsBaseString = 1;
+}
