@@ -359,6 +359,10 @@ func parseAnnotationToClient(clientMethod *generator.ClientMethod, gen *protogen
 		clientMethod.HeaderParamsCode = fmt.Sprintf(meta.ContentTypeFormat, proto.GetExtension(method.Desc.Options(), api.E_ContentType))
 	}
 
+	if proto.HasExtension(method.Desc.Options(), api.E_DecodeCustomKey) {
+		clientMethod.DecodeCustomKey = fmt.Sprintf("%s", proto.GetExtension(method.Desc.Options(), api.E_DecodeCustomKey))
+	}
+
 	return nil
 }
 

@@ -20,6 +20,7 @@ type ClientMethod struct {
 	HeaderParamsCode string
 	FormValueCode    string
 	FormFileCode     string
+	DecodeCustomKey  string
 }
 
 type ClientConfig struct {

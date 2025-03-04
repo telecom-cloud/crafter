@@ -52,6 +52,7 @@ extend google.protobuf.MethodOptions {
   // 50331~50360 used to extend method option by cft
   optional string handler_path_compatible = 50331; // handler_path specifies the path to generate the method
   optional string content_type = 50332;
+  optional string decode_custom_key = 50333;
 }
 
 extend google.protobuf.EnumValueOptions {
