@@ -28,6 +28,7 @@ import (
 	"net/url"
 	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	
 	cli "github.com/telecom-cloud/client-go/pkg/client"
@@ -696,7 +697,20 @@ func convertToURLValues(bodyParam interface{}) []byte {
 		if tag == "" {
 			tag = field.Name
 		}
-		vals.Add(tag, elem.Field(i).String())
+		switch elem.Field(i).Type().Kind() {
+		case reflect.String:
+			vals.Add(tag, elem.Field(i).String())
+		case reflect.Int32, reflect.Int64:
+			vals.Add(tag, strconv.FormatInt(elem.Field(i).Int(), 10))
+		case reflect.Uint32, reflect.Uint64:
+			vals.Add(tag, strconv.FormatUint(elem.Field(i).Uint(), 10))
+		case reflect.Bool:
+			vals.Add(tag, strconv.FormatBool(elem.Field(i).Bool()))
+		case reflect.Float32, reflect.Float64:
+			vals.Add(tag, strconv.FormatFloat(elem.Field(i).Float(), 'f', -1, 64))
+		default:
+			vals.Add(tag, elem.Field(i).String())
+		}
 	}
 
 	return []byte(vals.Encode())
