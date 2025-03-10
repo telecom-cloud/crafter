@@ -175,6 +175,8 @@ func NewCommand() *cli.App {
 	baseDomainFlag := cli.StringFlag{Name: "base_domain", Usage: "Specify the request domain.", Destination: &globalOpts.BaseDomain}
 	clientDirFlag := cli.StringFlag{Name: "client_dir", Usage: "Specify the client path. If not specified, IDL generated path is used for 'client' command; no client code is generated for 'new' command", Destination: &globalOpts.ClientDir}
 	forceClientDirFlag := cli.StringFlag{Name: "force_client_dir", Usage: "Specify the client path, and won't use namespaces as subpaths", Destination: &globalOpts.ForceClientDir}
+	useFlag := cli.StringFlag{Name: "use", Usage: "Specify the third model package to import for client.", Destination: &globalOpts.Use}
+	apiImportFlag := cli.StringFlag{Name: "api_import_dir", Usage: "Specify the api model package to import for client.", Destination: &globalOpts.ApiImportDir}
 
 	optPkgFlag := cli.StringSliceFlag{Name: "option_package", Aliases: []string{"P"}, Usage: "Specify the package path. ({include_path}={import_path})"}
 	includesFlag := cli.StringSliceFlag{Name: "proto_path", Aliases: []string{"I"}, Usage: "Add an IDL search path for includes. (Valid only if idl is protobuf)"}
@@ -283,6 +285,7 @@ func NewCommand() *cli.App {
 				&snakeNameFlag,
 				&rmTagFlag,
 				&excludeFilesFlag,
+				&apiImportFlag,
 			},
 			Action: Model,
 		},
@@ -295,23 +298,22 @@ func NewCommand() *cli.App {
 				&moduleFlag,
 				&baseDomainFlag,
 				&modelDirFlag,
+				&useFlag,
 				&clientDirFlag,
 				&forceClientDirFlag,
 				&forceUpdateClientFlag,
-
 				&includesFlag,
 				&protoOptionsFlag,
 				&noRecurseFlag,
 				&trimGoPackage,
-
 				&queryEnumIntFlag,
 				&unsetOmitemptyFlag,
 				&protoCamelJSONTag,
 				&snakeNameFlag,
 				&rmTagFlag,
 				&excludeFilesFlag,
-				&customPackage,
 				&protoPluginsFlag,
+				&apiImportFlag,
 			},
 			Action: Client,
 		},

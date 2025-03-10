@@ -25,8 +25,10 @@ import (
 
 type Plugin struct {
 	*protogen.Plugin
-	Package      string
-	Recursive    bool
+	Package   string
+	Recursive bool
+	// use to replace api.pb.go dir
+	ApiImportDir string
 	OutDir       string
 	ModelDir     string
 	UseDir       string
@@ -141,6 +143,7 @@ func (plugin *Plugin) parseArgs(param string) (*options.Option, error) {
 	plugin.OutDir = args.OutDir
 	plugin.PkgMap = args.OptPkgMap
 	plugin.UseDir = args.Use
+	plugin.ApiImportDir = args.ApiImportDir
 	return args, nil
 }
 
@@ -308,10 +311,13 @@ func (plugin *Plugin) GenerateFiles(pluginPb *protogen.Plugin) error {
 				impt = impt[len(plugin.Package):]
 			}
 			plugin.IdlClientDir = impt
-		} else if plugin.Recursive {
-			if strings.HasPrefix(f.Proto.GetPackage(), "google.protobuf") {
+		} else
+		// if recursive, generate all files
+		if plugin.Recursive {
+			if strings.HasPrefix(f.Proto.GetPackage(), "google.protobuf") || strings.HasSuffix(f.Proto.GetName(), "api.proto") {
 				continue
 			}
+
 			err := plugin.GenerateFile(pluginPb, f)
 			if err != nil {
 				return err
@@ -327,21 +333,20 @@ func (plugin *Plugin) GenerateFile(gen *protogen.Plugin, f *protogen.File) error
 	if strings.HasPrefix(impt, plugin.Package) {
 		impt = impt[len(plugin.Package):]
 	}
+
 	f.GeneratedFilenamePrefix = filepath.Join(util.ImportToPath(impt, ""), util.BaseName(f.Proto.GetName(), ".proto"))
 	f.Generate = true
-	// if use third-party model, no model code is generated within the project
-	if len(plugin.UseDir) != 0 {
-		return nil
-	}
-	file, err := generateFile(gen, f, plugin.RmTags)
+
+	file, err := plugin.generateFile(gen, f, plugin.RmTags)
 	if err != nil || file == nil {
 		return fmt.Errorf("generate file %s failed: %s", f.Proto.GetName(), err.Error())
 	}
+
 	return nil
 }
 
 // generateFile generates the contents of a .pb.go file.
-func generateFile(gen *protogen.Plugin, file *protogen.File, rmTags RemoveTags) (*protogen.GeneratedFile, error) {
+func (plugin *Plugin) generateFile(gen *protogen.Plugin, file *protogen.File, rmTags RemoveTags) (*protogen.GeneratedFile, error) {
 	filename := file.GeneratedFilenamePrefix + ".pb.go"
 	g := gen.NewGeneratedFile(filename, file.GoImportPath)
 	f := newFileInfo(file)
@@ -366,8 +371,17 @@ func generateFile(gen *protogen.Plugin, file *protogen.File, rmTags RemoveTags) 
 	}
 
 	for i, imps := 0, f.Desc.Imports(); i < imps.Len(); i++ {
+		if strings.HasSuffix(imps.Get(i).Path(), "api.proto") {
+			continue
+		}
 		genImport(gen, g, f, imps.Get(i))
 	}
+
+	// if we use third-party model, no model code is generated within the project
+	if plugin.ApiImportDir != "" {
+		g.Import(protogen.GoImportPath(plugin.ApiImportDir))
+	}
+
 	for _, enum := range f.allEnums {
 		genEnum(g, f, enum)
 	}

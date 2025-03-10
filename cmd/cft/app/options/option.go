@@ -23,6 +23,7 @@ type Option struct {
 	ClientDir      string // client path
 	BaseDomain     string // request domain
 	ForceClientDir string // client dir (not use namespace as a subpath)
+	ApiImportDir   string
 
 	IdlType       string   // idl type
 	IdlPaths      []string // master idl path
