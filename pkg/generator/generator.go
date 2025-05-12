@@ -2,7 +2,6 @@ package generator
 
 import (
 	"fmt"
-	tpl "github.com/telecom-cloud/crafter/pkg/template"
 	"path/filepath"
 	"strings"
 	"text/template"
@@ -10,6 +9,7 @@ import (
 	"github.com/telecom-cloud/crafter/pkg/generator/model"
 	"github.com/telecom-cloud/crafter/pkg/generator/model/golang"
 	"github.com/telecom-cloud/crafter/pkg/meta"
+	tpl "github.com/telecom-cloud/crafter/pkg/template"
 	"github.com/telecom-cloud/crafter/pkg/util"
 )
 

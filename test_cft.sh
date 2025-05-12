@@ -20,7 +20,7 @@ judge_exit() {
 compile_cft() {
   go build -o cft cmd/cft/cft.go
   judge_exit "$?"
-  mv cft /usr/local/bin/
+  mv cft $GOPATH/bin/
 }
 
 install_dependent_tools() {

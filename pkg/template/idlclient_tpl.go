@@ -61,7 +61,7 @@ func New{{$Module}}Client(hostUrl string, ops ...Option) ({{$Module}}Client, err
 
 {{range $_, $MethodInfo := .ClientMethods}}
 func (s *{{$Module| ToLowerCamelCase}}Client) {{$MethodInfo.Name}}(ctx context.Context, req *{{$MethodInfo.RequestTypeName}}, reqOpt ...config.RequestOption) (resp *{{$MethodInfo.ReturnTypeName}}, rawResponse *protocol.Response, err error) {
-	openapiResp := &openapi.OpenapiResponse{}
+	openapiResp := &openapi.Response{}
 	{{- if $MethodInfo.DecodeCustomKey }}
 	resp = &{{$MethodInfo.ReturnTypeName}}{
 		{{$MethodInfo.DecodeCustomKey}}: make([]*{{$MethodInfo.ReturnTypePackage}}.{{$MethodInfo.DecodeCustomKey}}, 0),

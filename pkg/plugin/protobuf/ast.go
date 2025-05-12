@@ -293,6 +293,17 @@ func parseAnnotationToClient(clientMethod *generator.ClientMethod, gen *protogen
 			val := checkSnakeName(queryAnnos.(string))
 			clientMethod.QueryParamsCode += fmt.Sprintf("%q: req.Get%s(),\n", val, f.GoName)
 		}
+		if proto.HasExtension(f.Desc.Options(), api.E_QueryCompatible) {
+			hasAnnotation = true
+			queryAnnos := proto.GetExtension(f.Desc.Options(), api.E_QueryCompatible)
+			val := checkSnakeName(queryAnnos.(string))
+			clientMethod.QueryParamsCode += fmt.Sprintf("%q: req.Get%s(),\n", val, f.GoName)
+			if isStringFieldType {
+				clientMethod.HeaderParamsCode += fmt.Sprintf("%q: req.Get%s(),\n", val, f.GoName)
+			} else {
+				clientMethod.HeaderParamsCode += fmt.Sprintf("%q: fmt.Sprint(req.Get%s()),\n", val, f.GoName)
+			}
+		}
 
 		if proto.HasExtension(f.Desc.Options(), api.E_Path) {
 			hasAnnotation = true

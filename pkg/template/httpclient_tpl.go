@@ -18,7 +18,6 @@ var httpClientTpl = `// Licensed under the Apache License, Version 2.0 (the "Lic
 package {{.PackageName}}
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"encoding/xml"
@@ -635,25 +634,14 @@ func defaultResponseResultDecider(res *response) error {
 		reason string
 		message string
 	)
-	if isCtapiResponse(res.bodyByte) {
-		ctapiResp := openapi.CtapiResponse{}
-		err := unmarshalContent(jsonContentType, res.bodyByte, &ctapiResp)
-		if err != nil {
-			return err
-		}
-		statusCode = res.StatusCode()
-		reason = ctapiResp.Error
-		message = ctapiResp.Message
-	} else {
-		openapiResp := openapi.OpenapiResponse{}
-		err := unmarshalContent(jsonContentType, res.bodyByte, &openapiResp)
-		if err != nil {
-			return err
-		}
-		statusCode = openapiResp.StatusCode
-		reason = openapiResp.Error
-		message = openapiResp.Message
+	openapiResp := openapi.Response{}
+	err := unmarshalContent(jsonContentType, res.bodyByte, &openapiResp)
+	if err != nil {
+		return err
 	}
+	statusCode = openapiResp.ParseStatusCode()
+	reason = openapiResp.Error
+	message = openapiResp.Message
 
 	statusErr := &apiErr.StatusError{
 		ErrStatus: apiErr.Status{
@@ -664,12 +652,6 @@ func defaultResponseResultDecider(res *response) error {
 	}
 
 	return statusErr
-}
-
-func isCtapiResponse(body []byte) bool {
-	keyword := []byte("CTAPI")
-	index := bytes.Index(body, keyword)
-	return index != -1
 }
 
 // IsJSONType method is to check JSON content type or not

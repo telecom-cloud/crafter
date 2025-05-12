@@ -3,7 +3,6 @@ package generator
 import (
 	"errors"
 	"fmt"
-	"github.com/telecom-cloud/crafter/pkg/util/logs"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -13,6 +12,7 @@ import (
 	"github.com/telecom-cloud/crafter/pkg/generator/model"
 	"github.com/telecom-cloud/crafter/pkg/meta"
 	tpl "github.com/telecom-cloud/crafter/pkg/template"
+	"github.com/telecom-cloud/crafter/pkg/util/logs"
 )
 
 type PackageDescription struct {

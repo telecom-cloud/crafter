@@ -314,7 +314,7 @@ func (plugin *Plugin) GenerateFiles(pluginPb *protogen.Plugin) error {
 		} else
 		// if recursive, generate all files
 		if plugin.Recursive {
-			if strings.HasPrefix(f.Proto.GetPackage(), "google.protobuf") || strings.HasSuffix(f.Proto.GetName(), "api.proto") {
+			if strings.HasPrefix(f.Proto.GetPackage(), "google.protobuf") || strings.HasSuffix(f.Proto.GetName(), systemProtoSuffix) {
 				continue
 			}
 
@@ -345,6 +345,8 @@ func (plugin *Plugin) GenerateFile(gen *protogen.Plugin, f *protogen.File) error
 	return nil
 }
 
+const systemProtoSuffix = "annotations.proto"
+
 // generateFile generates the contents of a .pb.go file.
 func (plugin *Plugin) generateFile(gen *protogen.Plugin, file *protogen.File, rmTags RemoveTags) (*protogen.GeneratedFile, error) {
 	filename := file.GeneratedFilenamePrefix + ".pb.go"
@@ -371,7 +373,7 @@ func (plugin *Plugin) generateFile(gen *protogen.Plugin, file *protogen.File, rm
 	}
 
 	for i, imps := 0, f.Desc.Imports(); i < imps.Len(); i++ {
-		if strings.HasSuffix(imps.Get(i).Path(), "api.proto") {
+		if strings.HasSuffix(imps.Get(i).Path(), systemProtoSuffix) {
 			continue
 		}
 		genImport(gen, g, f, imps.Get(i))

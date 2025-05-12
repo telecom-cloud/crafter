@@ -7,9 +7,9 @@ import "path/filepath"
 const (
 	sp = string(filepath.Separator)
 
-	defaultModelDir  = "biz" + sp + "model"
+	defaultModelDir  = "service" + sp + "types"
 	defaultScriptDir = "script"
-	defaultClientDir = "biz" + sp + "client"
+	defaultClientDir = "service"
 )
 
 var DefaultLayoutConfig = Config{
@@ -60,6 +60,7 @@ _testmain.go
 /output
 *.local.yml
 dumped_crafter_remote_config.json
+service
 		  `,
 		},
 		{
@@ -78,6 +79,15 @@ CURDIR=$(cd $(dirname $0); pwd)
 BinaryName={{.ServiceName}}
 echo "$CURDIR/bin/${BinaryName}"
 exec $CURDIR/bin/${BinaryName}`,
+		},
+		{
+			Path: defaultClientDir + sp + ".keep",
+			Body: ``,
+		},
+		{
+			Path:   "README.md",
+			Delims: [2]string{"{{", "}}"},
+			Body:   `##Example`,
 		},
 	},
 }
