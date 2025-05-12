@@ -636,6 +636,8 @@ func defaultResponseResultDecider(res *response) error {
 			},
 		}
 	}
+
+	return nil
 }
 
 // IsJSONType method is to check JSON content type or not
