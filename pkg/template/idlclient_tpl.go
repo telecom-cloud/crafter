@@ -70,12 +70,20 @@ func (s *{{$Module| ToLowerCamelCase}}Client) {{$MethodInfo.Name}}(ctx context.C
 	{{- else }}
 	openapiResp.ReturnObj = &resp
 	{{- end }}
+    {{if $MethodInfo.QueryParamsCode }}
+	queryParams := map[string]interface{}{
+		{{$MethodInfo.QueryParamsCode}}
+	}
+	for k, v := range queryParams {
+		if v == nil {
+			delete(queryParams, k)
+		}
+	}
+    {{- end }}
 	ret, err := s.client.R().
 		SetContext(ctx).
 		{{if $MethodInfo.QueryParamsCode }}
-		SetQueryParams(map[string]interface{}{
-			{{$MethodInfo.QueryParamsCode}}
-		}).
+		SetQueryParams(queryParams).
 		{{- end }}
 		{{if $MethodInfo.PathParamsCode }}
 		SetPathParams(map[string]string{
