@@ -22,8 +22,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/telecom-cloud/client-go/pkg/openapi"
 	"github.com/telecom-cloud/client-go/pkg/common/config"
+	"github.com/telecom-cloud/client-go/pkg/common/utils"
+	"github.com/telecom-cloud/client-go/pkg/openapi"
 	"github.com/telecom-cloud/client-go/pkg/protocol"
 
 {{ range $k, $v := .Imports}}
@@ -74,11 +75,7 @@ func (s *{{$Module| ToLowerCamelCase}}Client) {{$MethodInfo.Name}}(ctx context.C
 	queryParams := map[string]interface{}{
 		{{$MethodInfo.QueryParamsCode}}
 	}
-	for k, v := range queryParams {
-		if v == nil {
-			delete(queryParams, k)
-		}
-	}
+	utils.OptimizeQueryParams(queryParams)
     {{- end }}
 	ret, err := s.client.R().
 		SetContext(ctx).
