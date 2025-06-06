@@ -623,11 +623,12 @@ func createHTTPRequest(c *HttpClient, r *request) (err error) {
 func silently(_ ...interface{}) {}
 
 func defaultResponseResultDecider(res *response) error {
-	openapiResp := openapi.Response{}
 	err := openapi.BindResponse(string(res.bodyByte), res.request.result)
 	if err != nil {
 		return err
 	}
+
+	openapiResp := res.request.result.(*openapi.Response)
 
 	if res.StatusCode() > 400 {
 		return &apiErr.StatusError{
