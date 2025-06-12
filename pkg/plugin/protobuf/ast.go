@@ -323,7 +323,7 @@ func parseAnnotationToClient(clientMethod *generator.ClientMethod, gen *protogen
 			if isStringFieldType {
 				clientMethod.HeaderParamsCode += fmt.Sprintf("%q: req.Get%s(),\n", val, f.GoName)
 			} else {
-				clientMethod.HeaderParamsCode += fmt.Sprintf("%q: fmt.Sprint(req.Get%s()),\n", val, f.GoName)
+				clientMethod.HeaderParamsCode += fmt.Sprintf("%q: JsonMarshal(req.Get%s()),\n", val, f.GoName)
 			}
 		}
 

@@ -3,7 +3,7 @@ package meta
 import "runtime"
 
 // Version cft version
-const Version = "v0.1.5"
+const Version = "v0.1.5-rc"
 
 const DefaultServiceName = "crafter_service"
 
