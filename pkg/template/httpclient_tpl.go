@@ -258,9 +258,12 @@ func (c *HttpClient) Execute(req *request) (*response, error) {
 
 // R get request
 func (c *HttpClient) R() *request {
+	if c.header == nil {
+		c.header = http.Header{}
+	}
 	return &request{
 		queryParam:     url.Values{},
-		header:         http.Header{},
+		header:         c.header,
 		pathParam:      map[string]string{},
 		formParam:      map[string]string{},
 		fileParam:      map[string]string{},
@@ -643,8 +646,11 @@ func defaultResponseResultDecider(res *response) error {
 			reason = openapiResp.Error
 		}
 
+		requestId := res.Header().Get("X-Request-Id")
+
 		return &apiErr.StatusError{
 			ErrStatus: apiErr.Status{
+				RequestId: requestId,
 				Code:    int32(openapiResp.ParseStatusCode()),
 				Reason:  reason,
 				Message: openapiResp.Message,
